@@ -18,6 +18,7 @@
     </style>
     <script src="./scripts/simplex-noise/simplex-noise.js"></script>
     <script src="./scripts/three/three.min.js"></script>
+    <script src="./scripts/three/examples/js/controls/OrbitControls.js"></script>
 
     <script type="text/javascript" defer>
         //JQuery-like selector
@@ -157,6 +158,23 @@
 
             document.body.appendChild(renderer.domElement).style = "position: fixed; top: 0";
 
+            controls = new THREE.OrbitControls (camera, renderer.domElement);
+            controls.target.set( 0, 0, -50 ); // IMPORTANT: new location of focus
+
+            //controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
+            controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
+            controls.minDistance = 100;
+            controls.maxDistance = 500;
+            //controls.maxPolarAngle = Math.PI / 2;
+
+            controls.enableZoom = true;
+            controls.enablePan = true;
+            controls.enableRotate = true;
+
+            controls.update();
+
             window.addEventListener('resize', () => {
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 camera.aspect = window.innerWidth / window.innerHeight;
@@ -181,6 +199,9 @@
             scene.add(light);
 
             let render = () => {
+                // required if controls.enableDamping or controls.autoRotate are set to true
+                controls.update();
+                
                 requestAnimationFrame(render);
 
                 sphere.rotation.x += .05;
@@ -189,7 +210,7 @@
 
                 //update the pointer and stats, if configured
                 //rotate the cube on every tick
-                if(obj) obj.rotation.z -= 0.001;
+                //if(obj) obj.rotation.z -= 0.001;
                 
                 renderer.render(scene, camera);
             };
@@ -201,7 +222,7 @@
 </head>
 
 <body>
-    <canvas id="debug-canvas" width="200" height="200" style="position:relative; z-index: 100;"></canvas>
+    <canvas id="debug-canvas" width="200" height="200" style="position:relative; z-index: 100; pointer-events: none"></canvas>
 </body>
 
 </html>
