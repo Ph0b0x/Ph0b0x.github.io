@@ -122,10 +122,10 @@
         //required for flat shading
         geo.computeVertexNormals(true);
         const mesh = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({
-            // wireframe:true,
+            //wireframe:true,
             vertexColors: THREE.VertexColors,
             //required for flat shading
-            flatShading:false,
+            flatShading:true,
         }))
         mesh.position.y = -0
         mesh.position.z = -20
@@ -198,7 +198,16 @@
 
             scene.add(light);
 
-            let render = () => {
+            const fpsElem = document.querySelector("#fps");
+            let then = 0;
+
+            let render = (now) => {
+                now *= 0.001;                          // convert to seconds
+                const deltaTime = now - then;          // compute time since last frame
+                then = now;                            // remember time for next frame
+                const fps = 1 / deltaTime;             // compute frames per second
+                fpsElem.textContent = fps.toFixed(1);  // update fps display
+
                 // required if controls.enableDamping or controls.autoRotate are set to true
                 controls.update();
                 
@@ -222,6 +231,7 @@
 </head>
 
 <body>
+    <div style="position:relative; z-index: 150; pointer-events: none; color: white;">fps: <span id="fps"></span></div>
     <canvas id="debug-canvas" width="200" height="200" style="position:relative; z-index: 100; pointer-events: none"></canvas>
 </body>
 
